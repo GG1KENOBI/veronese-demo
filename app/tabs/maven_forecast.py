@@ -1,7 +1,7 @@
 """Forecast section on Maven Roasters — 30/60/90 day revenue forecast.
 
-Uses ensemble of AutoARIMA + SeasonalNaive + HistoricAverage.
-Backtested WAPE on last 14 days of data.
+Ensemble: SeasonalNaive (amplitude + weekly pattern) + AutoTheta (trend), 50/50.
+Level correction: shift so first 14 days of forecast = last 14 days of history.
 """
 from __future__ import annotations
 
@@ -24,9 +24,11 @@ def _fmt_rub(v: float) -> str:
 def render() -> None:
     st.markdown("### Прогноз выручки на следующий период")
     st.caption(
-        "Модели: ансамбль из **AutoARIMA + SeasonalNaive + HistoricAverage**. "
-        "Точность замерена backtest'ом на последних 14 днях данных. "
-        "Модели обучаются на дневных суммах. Используется библиотека Nixtla StatsForecast."
+        "**SeasonalNaive** (амплитуда + недельный паттерн) + **AutoTheta** (тренд), "
+        "равное среднее. Финальный шаг — **level correction**: сдвиг прогноза так, чтобы "
+        "первые 14 дней прогноза были на уровне последних 14 дней истории (без этого "
+        "ансамбль стартует ниже истории на растущем ряду). Точность — backtest-WAPE "
+        "на последних 14 днях. Библиотека: Nixtla StatsForecast."
     )
 
     # ─── Controls ────────────────────────────────────────────────────
@@ -42,7 +44,7 @@ def render() -> None:
         horizon = st.selectbox("Горизонт, дней", [30, 60, 90], index=0)
 
     # ─── Compute forecast ────────────────────────────────────────────
-    with st.spinner(f"Обучаем 3 модели на 6 месяцах истории, строим прогноз на {horizon} дней..."):
+    with st.spinner(f"Обучаем модели на 6 месяцах истории, строим прогноз на {horizon} дней..."):
         result = M.forecast(target, horizon_days=horizon)
 
     if "error" in result:
@@ -151,9 +153,8 @@ def render() -> None:
             line=dict(color=COLORS["brand_primary"], width=1.5),
         ))
         palette = {
-            "AutoARIMA": COLORS["good"],
             "SeasonalNaive": COLORS["warning"],
-            "HistoricAverage": COLORS["neutral"],
+            "AutoTheta": "#a855f7",  # фиолетовый
         }
         for m in model_cols:
             fig2.add_trace(go.Scatter(
@@ -161,14 +162,14 @@ def render() -> None:
                 y=forecast[m],
                 mode="lines",
                 name=m,
-                line=dict(color=palette.get(m, COLORS["info"]), width=2, dash="dot" if m == "HistoricAverage" else "solid"),
+                line=dict(color=palette.get(m, COLORS["info"]), width=1.8),
             ))
         # Ensemble
         fig2.add_trace(go.Scatter(
             x=forecast["ds"],
             y=forecast["y_hat"],
             mode="lines",
-            name="Ансамбль (среднее 3 моделей)",
+            name="Ансамбль (среднее + level correction)",
             line=dict(color=COLORS["brand_accent"], width=3),
         ))
         fig2.update_layout(
@@ -184,16 +185,94 @@ def render() -> None:
         fig2.update_yaxes(rangemode="tozero")
         st.plotly_chart(fig2, use_container_width=True)
 
+        per_wape = result.get("per_model_wape", {})
+        level_shift = result.get("level_shift", 0.0)
+        rows = "\n".join(
+            f"| {m} | ±{per_wape.get(m, float('nan')):.2f}% |"
+            for m in model_cols
+        )
         st.markdown(
-            """
-            **Почему ансамбль, а не одна модель:**
-            - **AutoARIMA** — ловит тренд и сезонность, но нестабилен на коротких сериях
-            - **SeasonalNaive** — «в этот день недели было X, значит и будет X». Крепкий baseline
-            - **HistoricAverage** — среднее историческое, anchor на случай «модели поехали»
+            f"""
+            **Как устроен ансамбль:**
 
-            Среднее трёх даёт устойчивое предсказание: одна модель ошиблась — две другие компенсируют.
-            Это стандартный приём в индустрии (Nixtla, Uber Michelangelo, Amazon Forecast).
+            | Модель | Backtest WAPE |
+            |---|---|
+            {rows}
+
+            - **SeasonalNaive** — сохраняет амплитуду и недельный паттерн (копирует
+              последнюю неделю). «Умные» модели (ARIMA, ETS) дампят дисперсию к
+              среднему — sample path истории шумный, а ожидание — гладкое.
+            - **AutoTheta** — retail-baseline, уверенно ловит тренд на растущих рядах.
+              AutoARIMA с недельной сезонностью часто не видит тренда вовсе.
+
+            Ансамбль = простое среднее 50/50. Затем применяется **level correction**:
+            сдвиг **{level_shift:+,.0f} ₽/день**, чтобы первые 14 дней прогноза
+            совпадали по среднему с последними 14 днями истории. Без этого ансамбль
+            на растущем ряду стартует ниже последнего уровня истории, создавая
+            визуальный разрыв на стыке.
+
+            Доверительный интервал берётся от AutoTheta и центрируется на y_hat.
             """
+        )
+
+    # ─── Drill-down: forecast per store ──────────────────────────────
+    with st.expander("🏬 Разбивка прогноза по точкам (drill-down)"):
+        st.caption(
+            "Тот же горизонт прогноза, построенный независимо для каждой из 3 точек. "
+            "Сумма по трём точкам ≈ прогнозу по сети (± небольшой разрыв, который "
+            "в продвинутой версии убирается hierarchical reconciliation)."
+        )
+        store_keys = [("moscow", "Москва · Центр"), ("spb", "Санкт-Петербург"), ("ekb", "Екатеринбург")]
+        store_colors = [COLORS["brand_primary"], COLORS["brand_accent"], COLORS["warning"]]
+        fig3 = go.Figure()
+        store_forecast_total = 0.0
+        for (key, label), color in zip(store_keys, store_colors):
+            sr = M.forecast(key, horizon_days=horizon)
+            if "error" in sr:
+                continue
+            hist_s = sr["history"]
+            fc_s = sr["forecast"]
+            fig3.add_trace(go.Scatter(
+                x=hist_s["ds"].tail(60), y=hist_s["y"].tail(60),
+                mode="lines", name=f"{label} (история)",
+                line=dict(color=color, width=1, dash="dot"),
+                showlegend=False,
+                hoverinfo="skip",
+            ))
+            fig3.add_trace(go.Scatter(
+                x=fc_s["ds"], y=fc_s["y_hat"],
+                mode="lines", name=label,
+                line=dict(color=color, width=2),
+            ))
+            store_forecast_total += float(fc_s["y_hat"].sum())
+
+        fig3.update_layout(
+            height=380,
+            margin=dict(l=60, r=20, t=20, b=40),
+            xaxis_title="",
+            yaxis_title="Выручка точки, ₽",
+            hovermode="x unified",
+            legend=dict(orientation="h", y=1.08, x=0.5, xanchor="center"),
+            plot_bgcolor=COLORS["bg_transparent"],
+            paper_bgcolor=COLORS["bg_transparent"],
+        )
+        fig3.update_yaxes(rangemode="tozero")
+        st.plotly_chart(fig3, use_container_width=True)
+
+        network_sum = float(forecast["y_hat"].sum())
+        gap_pct = (store_forecast_total - network_sum) / max(1.0, network_sum) * 100
+        st.markdown(
+            f"""
+            <div style="color:#94a3b8;font-size:13px;">
+            <b>Проверка когерентности:</b> прогноз по сети целиком —
+            <b>{network_sum/1_000_000:.2f} млн ₽</b>. Сумма трёх независимых прогнозов
+            по точкам — <b>{store_forecast_total/1_000_000:.2f} млн ₽</b>.
+            Разрыв: <b>{gap_pct:+.2f}%</b>. Это и есть <i>incoherence</i>, которую
+            закрывает hierarchical reconciliation (Nixtla MinTrace) — фича под
+            production-внедрение.
+            </div>
+            """,
+            unsafe_allow_html=True,
         )
 
     # ─── Raw forecast table ──────────────────────────────────────────

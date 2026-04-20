@@ -9,9 +9,9 @@ __pycache__/
 *.swp
 .streamlit/secrets.toml
 
-# Raw source data (big CSVs, source-controlled separately)
+# Raw source data: CSV не трекаем (большие), parquet для демо — трекаем (1.9 MB).
 data/raw/*.csv
-archive/
+archive/*.csv
 
 # Note: data/processed/*.parquet ARE tracked — they ship with the demo
 # so Streamlit Cloud / fresh clones work without running the 5-7 min pipeline.
