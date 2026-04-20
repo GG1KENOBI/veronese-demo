@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.pyc
+.git/
+.pytest_cache/
+.streamlit/secrets.toml
+archive/
+*.log
+tmp/
+.DS_Store
+план.pdf
+ресерч.pdf
