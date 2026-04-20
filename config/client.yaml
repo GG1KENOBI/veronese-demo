@@ -6,9 +6,11 @@
 # Пересчитываемые величины (годовая экономия, сколько минут/день и т.д.)
 # считаются автоматически из `rub_per_production_minute` и `working_days_per_year`.
 
-client_name: "VERONESE"              # Показывается в title, narrative
-client_name_short: "VERONESE"        # Для коротких подписей
-brand_style: "Союз ЛУР / VERONESE"   # Полное имя для юридической ясности
+client_name: "Maven Roasters"                     # Показывается в title, narrative
+client_name_short: "Maven Roasters"               # Для коротких подписей
+brand_style: "Maven Roasters (Kaggle, 2 года)"    # Датасет в футере
+# Чтобы пересобрать под конкретного клиента (Союз ЛУР, VERONESE, другого) —
+# замените client_name и brand_style на их имя, остальное пересчитается.
 
 # Размер производства (источник: техлиста клиента или наши допущения)
 lines_count: 3                       # сколько фасовочных линий

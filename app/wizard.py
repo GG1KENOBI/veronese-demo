@@ -47,8 +47,12 @@ def render_compact(hours_saved_per_day: float) -> ClientInputs:
     defaults = get_inputs()
 
     st.markdown(
-        "<div style='color:#94a3b8;font-size:13px;margin-bottom:8px;'>"
-        "Введите 3 цифры вашего завода — пересчитаем экономию под вас"
+        "<div style='color:#cbd5e1;font-size:14px;margin-bottom:4px;font-weight:600;'>"
+        "💡 Прикиньте эффект для своего завода"
+        "</div>"
+        "<div style='color:#94a3b8;font-size:12px;margin-bottom:10px;'>"
+        "Цифра в hero ниже пересчитается по вашим вводным. "
+        "Точный расчёт — уже на ваших SKU после discovery."
         "</div>",
         unsafe_allow_html=True,
     )

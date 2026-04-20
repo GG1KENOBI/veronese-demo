@@ -84,8 +84,11 @@ def render(data: DemoData, inputs: ClientInputs) -> None:
                 −{hours_saved:.1f} ч/день на переналадках = +{format_mrub(annual_mrub)}/год
               </div>
               <div style='font-size:14px;color:#cbd5e1;margin-top:6px;'>
-                То же оборудование, тот же штат. Только правильный порядок SKU.
+                То же оборудование, тот же штат, только правильный порядок SKU.
                 Сокращение на {savings_pct:.0f}% лишних переналадок за счёт CP-SAT оптимизатора.
+                <span style='color:#94a3b8;font-size:13px;font-style:italic;'>
+                  На данных Kaggle — на ваших SKU цифра пересчитается.
+                </span>
               </div>
             </div>
             """,

@@ -105,7 +105,10 @@ def render_big_number(kpis: HeroKPIs) -> None:
             +{amount}/год
           </div>
           <div style='font-size:18px;color:#cbd5e1;margin-top:4px;'>
-            на ваших же линиях · без капитальных затрат · окупаемость {CLIENT.typical_payback_months_min}–{CLIENT.typical_payback_months_max} месяца
+            на существующих линиях · без капитальных затрат · окупаемость {CLIENT.typical_payback_months_min}–{CLIENT.typical_payback_months_max} месяца
+          </div>
+          <div style='font-size:12px;color:#64748b;margin-top:6px;font-style:italic;'>
+            Расчёт по вводным выше. Точная цифра — после discovery на реальных SKU.
           </div>
         </div>
         """,
