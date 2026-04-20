@@ -1,0 +1,385 @@
+# SKU catalog for VERONESE coffee production demo
+# Maps Maven Roasters product types to realistic coffee SKUs
+
+skus:
+  # === Зерновой кофе VERONESE (brand) ===
+  - sku_id: VRN_BEANS_DARK_250
+    brand: VERONESE
+    form: Beans
+    blend: Dolce Arabica
+    roast_level: Dark
+    is_flavored: false
+    is_decaf: false
+    package_size_g: 250
+    package_type: Bag
+    eligible_lines: [Packaging_A]
+    unit_price_rub: 540
+    maven_source: "Gourmet brewed coffee:Ethiopia"
+
+  - sku_id: VRN_BEANS_DARK_500
+    brand: VERONESE
+    form: Beans
+    blend: Dolce Arabica
+    roast_level: Dark
+    is_flavored: false
+    is_decaf: false
+    package_size_g: 500
+    package_type: Bag
+    eligible_lines: [Packaging_A]
+    unit_price_rub: 980
+    maven_source: "Gourmet brewed coffee:Ethiopia"
+
+  - sku_id: VRN_BEANS_MED_250
+    brand: VERONESE
+    form: Beans
+    blend: Crema Piccante
+    roast_level: Medium
+    is_flavored: false
+    is_decaf: false
+    package_size_g: 250
+    package_type: Bag
+    eligible_lines: [Packaging_A]
+    unit_price_rub: 520
+    maven_source: "Gourmet brewed coffee:Brazilian"
+
+  - sku_id: VRN_BEANS_MED_500
+    brand: VERONESE
+    form: Beans
+    blend: Crema Piccante
+    roast_level: Medium
+    is_flavored: false
+    is_decaf: false
+    package_size_g: 500
+    package_type: Bag
+    eligible_lines: [Packaging_A]
+    unit_price_rub: 950
+    maven_source: "Gourmet brewed coffee:Brazilian"
+
+  - sku_id: VRN_BEANS_LIGHT_250
+    brand: VERONESE
+    form: Beans
+    blend: Gusto Profondo
+    roast_level: Light
+    is_flavored: false
+    is_decaf: false
+    package_size_g: 250
+    package_type: Bag
+    eligible_lines: [Packaging_A]
+    unit_price_rub: 560
+    maven_source: "Premium brewed coffee:Ethiopia"
+
+  - sku_id: VRN_BEANS_DECAF_250
+    brand: VERONESE
+    form: Beans
+    blend: Decaf Classico
+    roast_level: Medium
+    is_flavored: false
+    is_decaf: true
+    package_size_g: 250
+    package_type: Bag
+    eligible_lines: [Packaging_A]
+    unit_price_rub: 620
+    maven_source: "Organic brewed coffee"
+
+  - sku_id: VRN_BEANS_BULK_1000
+    brand: VERONESE
+    form: Beans
+    blend: Dolce Arabica
+    roast_level: Dark
+    is_flavored: false
+    is_decaf: false
+    package_size_g: 1000
+    package_type: Bag
+    eligible_lines: [Packaging_B]
+    unit_price_rub: 1850
+    maven_source: "Gourmet brewed coffee:Ethiopia"
+
+  # === Молотый кофе VERONESE ===
+  - sku_id: VRN_GROUND_DARK_250
+    brand: VERONESE
+    form: Ground
+    blend: Dolce Arabica
+    roast_level: Dark
+    is_flavored: false
+    is_decaf: false
+    package_size_g: 250
+    package_type: Bag
+    eligible_lines: [Packaging_A]
+    unit_price_rub: 550
+    maven_source: "Drip coffee:Dark chocolate"
+
+  - sku_id: VRN_GROUND_MED_250
+    brand: VERONESE
+    form: Ground
+    blend: Crema Piccante
+    roast_level: Medium
+    is_flavored: false
+    is_decaf: false
+    package_size_g: 250
+    package_type: Bag
+    eligible_lines: [Packaging_A]
+    unit_price_rub: 530
+    maven_source: "Drip coffee:Our Old Time Diner Blend"
+
+  - sku_id: VRN_GROUND_FLAV_ORANGE_250
+    brand: VERONESE
+    form: Ground
+    blend: Orange-Chocolate
+    roast_level: Medium
+    is_flavored: true
+    is_decaf: false
+    package_size_g: 250
+    package_type: Bag
+    eligible_lines: [Packaging_A]
+    unit_price_rub: 610
+    maven_source: "Organic Chocolate:Sugar Free Almond"
+
+  - sku_id: VRN_GROUND_FLAV_IRISH_250
+    brand: VERONESE
+    form: Ground
+    blend: Irish Cream
+    roast_level: Medium
+    is_flavored: true
+    is_decaf: false
+    package_size_g: 250
+    package_type: Bag
+    eligible_lines: [Packaging_A]
+    unit_price_rub: 620
+    maven_source: "Hot chocolate:Dark chocolate"
+
+  - sku_id: VRN_GROUND_DARK_500
+    brand: VERONESE
+    form: Ground
+    blend: Dolce Arabica
+    roast_level: Dark
+    is_flavored: false
+    is_decaf: false
+    package_size_g: 500
+    package_type: Bag
+    eligible_lines: [Packaging_A]
+    unit_price_rub: 1010
+    maven_source: "Drip coffee:Dark chocolate"
+
+  - sku_id: VRN_GROUND_DECAF_250
+    brand: VERONESE
+    form: Ground
+    blend: Decaf Classico
+    roast_level: Medium
+    is_flavored: false
+    is_decaf: true
+    package_size_g: 250
+    package_type: Bag
+    eligible_lines: [Packaging_A]
+    unit_price_rub: 640
+    maven_source: "Organic brewed coffee"
+
+  # === Капсулы VERONESE ===
+  - sku_id: VRN_CAPS_NESP_DARK_10
+    brand: VERONESE
+    form: Capsules
+    blend: Dolce Arabica
+    roast_level: Dark
+    is_flavored: false
+    is_decaf: false
+    package_size_g: 55
+    package_type: Capsule_Nespresso
+    eligible_lines: [Packaging_C]
+    unit_price_rub: 320
+    maven_source: "Premium brewed coffee:Ethiopia"
+
+  - sku_id: VRN_CAPS_NESP_MED_10
+    brand: VERONESE
+    form: Capsules
+    blend: Crema Piccante
+    roast_level: Medium
+    is_flavored: false
+    is_decaf: false
+    package_size_g: 55
+    package_type: Capsule_Nespresso
+    eligible_lines: [Packaging_C]
+    unit_price_rub: 310
+    maven_source: "Premium brewed coffee:Brazilian"
+
+  - sku_id: VRN_CAPS_NESP_LUNGO_10
+    brand: VERONESE
+    form: Capsules
+    blend: Lungo Intenso
+    roast_level: Dark
+    is_flavored: false
+    is_decaf: false
+    package_size_g: 55
+    package_type: Capsule_Nespresso
+    eligible_lines: [Packaging_C]
+    unit_price_rub: 330
+    maven_source: "Premium brewed coffee:Ethiopia"
+
+  - sku_id: VRN_CAPS_DOLCE_CAPP_16
+    brand: VERONESE
+    form: Capsules
+    blend: Cappuccino Blend
+    roast_level: Medium
+    is_flavored: true
+    is_decaf: false
+    package_size_g: 200
+    package_type: Capsule_DolceGusto
+    eligible_lines: [Packaging_C]
+    unit_price_rub: 480
+    maven_source: "Hot chocolate:Dark chocolate"
+
+  - sku_id: VRN_CAPS_DOLCE_LATTE_16
+    brand: VERONESE
+    form: Capsules
+    blend: Latte Blend
+    roast_level: Medium
+    is_flavored: true
+    is_decaf: false
+    package_size_g: 200
+    package_type: Capsule_DolceGusto
+    eligible_lines: [Packaging_C]
+    unit_price_rub: 470
+    maven_source: "Hot chocolate:Dark chocolate"
+
+  - sku_id: VRN_CAPS_NESP_DECAF_10
+    brand: VERONESE
+    form: Capsules
+    blend: Decaf Classico
+    roast_level: Medium
+    is_flavored: false
+    is_decaf: true
+    package_size_g: 55
+    package_type: Capsule_Nespresso
+    eligible_lines: [Packaging_C]
+    unit_price_rub: 360
+    maven_source: "Organic brewed coffee"
+
+  # === 3-в-1 и растворимый ===
+  - sku_id: VRN_3IN1_CLASSIC_10
+    brand: VERONESE
+    form: 3in1
+    blend: Classic 3in1
+    roast_level: Medium
+    is_flavored: true
+    is_decaf: false
+    package_size_g: 180
+    package_type: Stick
+    eligible_lines: [Packaging_A]
+    unit_price_rub: 180
+    maven_source: "Regular syrup:Hazelnut"
+
+  - sku_id: VRN_3IN1_VANILLA_10
+    brand: VERONESE
+    form: 3in1
+    blend: Vanilla 3in1
+    roast_level: Medium
+    is_flavored: true
+    is_decaf: false
+    package_size_g: 180
+    package_type: Stick
+    eligible_lines: [Packaging_A]
+    unit_price_rub: 190
+    maven_source: "Regular syrup:Vanilla"
+
+  # === СТМ (Private Label) ===
+  - sku_id: CTM_BEANS_DARK_500
+    brand: CTM
+    form: Beans
+    blend: CTM Dark Blend
+    roast_level: Dark
+    is_flavored: false
+    is_decaf: false
+    package_size_g: 500
+    package_type: Bag
+    eligible_lines: [Packaging_A]
+    unit_price_rub: 720
+    maven_source: "Gourmet brewed coffee:Brazilian"
+
+  - sku_id: CTM_BEANS_MED_500
+    brand: CTM
+    form: Beans
+    blend: CTM Medium Blend
+    roast_level: Medium
+    is_flavored: false
+    is_decaf: false
+    package_size_g: 500
+    package_type: Bag
+    eligible_lines: [Packaging_A]
+    unit_price_rub: 700
+    maven_source: "Gourmet brewed coffee:Brazilian"
+
+  - sku_id: CTM_GROUND_DARK_250
+    brand: CTM
+    form: Ground
+    blend: CTM Dark Blend
+    roast_level: Dark
+    is_flavored: false
+    is_decaf: false
+    package_size_g: 250
+    package_type: Bag
+    eligible_lines: [Packaging_A]
+    unit_price_rub: 380
+    maven_source: "Drip coffee:Dark chocolate"
+
+  - sku_id: CTM_GROUND_MED_250
+    brand: CTM
+    form: Ground
+    blend: CTM Medium Blend
+    roast_level: Medium
+    is_flavored: false
+    is_decaf: false
+    package_size_g: 250
+    package_type: Bag
+    eligible_lines: [Packaging_A]
+    unit_price_rub: 370
+    maven_source: "Drip coffee:Our Old Time Diner Blend"
+
+  - sku_id: CTM_BEANS_BULK_1000
+    brand: CTM
+    form: Beans
+    blend: CTM HoReCa
+    roast_level: Medium
+    is_flavored: false
+    is_decaf: false
+    package_size_g: 1000
+    package_type: Bag
+    eligible_lines: [Packaging_B]
+    unit_price_rub: 1250
+    maven_source: "Gourmet brewed coffee:Brazilian"
+
+  - sku_id: CTM_CAPS_NESP_DARK_10
+    brand: CTM
+    form: Capsules
+    blend: CTM Dark Blend
+    roast_level: Dark
+    is_flavored: false
+    is_decaf: false
+    package_size_g: 55
+    package_type: Capsule_Nespresso
+    eligible_lines: [Packaging_C]
+    unit_price_rub: 220
+    maven_source: "Premium brewed coffee:Brazilian"
+
+  - sku_id: CTM_CAPS_NESP_MED_10
+    brand: CTM
+    form: Capsules
+    blend: CTM Medium Blend
+    roast_level: Medium
+    is_flavored: false
+    is_decaf: false
+    package_size_g: 55
+    package_type: Capsule_Nespresso
+    eligible_lines: [Packaging_C]
+    unit_price_rub: 210
+    maven_source: "Premium brewed coffee:Brazilian"
+
+  - sku_id: CTM_3IN1_CLASSIC_10
+    brand: CTM
+    form: 3in1
+    blend: CTM 3in1
+    roast_level: Medium
+    is_flavored: true
+    is_decaf: false
+    package_size_g: 180
+    package_type: Stick
+    eligible_lines: [Packaging_A]
+    unit_price_rub: 120
+    maven_source: "Regular syrup:Hazelnut"

@@ -1,0 +1,69 @@
+# Производственные параметры завода VERONESE (Великий Новгород)
+# Основано на оборудовании Bühler и индустриальных правилах
+
+# --- ОБЖАРКА (общий ресурс для всего завода) ---
+roasting:
+  roasters:
+    - id: Roaster_1
+      batch_size_kg: 60
+      cycle_minutes: 18           # основное время обжарки
+      cooling_minutes: 7          # охлаждение
+      # Полный цикл = 25 мин/batch → ~2.4 batch/час → ~144 кг/час
+    - id: Roaster_2
+      batch_size_kg: 60
+      cycle_minutes: 18
+      cooling_minutes: 7
+
+# --- ДЕГАЗАЦИЯ (буферный склад) ---
+degassing:
+  # минимальное время между обжаркой и фасовкой (в часах)
+  min_hours_by_blend:
+    default: 8
+    Dolce_Arabica: 12
+    Gusto_Profondo: 16
+    Crema_Piccante: 8
+    Decaf_Classico: 6
+    Lungo_Intenso: 12
+
+# --- ПОМОЛ ---
+grinding:
+  machines:
+    - id: Grinder_1
+      throughput_kg_per_hour: 200
+
+# --- ФАСОВОЧНЫЕ ЛИНИИ ---
+packaging_lines:
+  - id: Packaging_A
+    description: "Универсальная линия: пакеты 100-500g, стики"
+    throughput_units_per_minute: 110    # упаковок/мин
+    shift_minutes: 480                  # 8 часов смена
+    shifts_per_week: 7                  # 5 дней × 1.4 смены (1 смена + субботняя)
+    availability_base: 0.82             # базовая доступность (до учёта setup)
+
+  - id: Packaging_B
+    description: "Линия больших объёмов: пакеты 1kg+ (HoReCa)"
+    throughput_units_per_minute: 45
+    shift_minutes: 480
+    shifts_per_week: 3                  # 3 дня × 1 смена
+    availability_base: 0.86
+
+  - id: Packaging_C
+    description: "Капсульная линия: Nespresso + Dolce Gusto"
+    throughput_units_per_minute: 230
+    shift_minutes: 480
+    shifts_per_week: 5                  # 5 дней × 1 смена
+    availability_base: 0.82
+
+# --- ЗАТРАТЫ (руб) ---
+costs:
+  # производственные затраты на единицу продукции (упрощённо)
+  production_cost_per_unit: 120       # руб/упаковку (себестоимость зерна + электричество)
+  setup_cost_rub: 25000                # руб/переналадку (труд оператора + startup rejects + потери продукта)
+  holding_cost_per_unit_per_week: 12  # руб/упаковку в неделю хранения
+  backorder_cost_per_unit: 800        # штраф за дефицит (потеря маржи + репутация)
+
+# --- Service level и safety stock ---
+service_level:
+  target: 0.95                         # 95% service level
+  z_value: 1.65                        # Z для 95%
+  lead_time_weeks: 1

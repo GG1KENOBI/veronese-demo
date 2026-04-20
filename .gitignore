@@ -1,0 +1,27 @@
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.ipynb_checkpoints/
+.DS_Store
+*.swp
+.streamlit/secrets.toml
+
+# Raw source data (big CSVs, source-controlled separately)
+data/raw/*.csv
+archive/
+
+# Note: data/processed/*.parquet ARE tracked — they ship with the demo
+# so Streamlit Cloud / fresh clones work without running the 5-7 min pipeline.
+
+# Legacy baseline snapshot dir — replaced by data/processed/scenarios/
+data/processed/baseline/
+
+# Temp
+*.log
+/tmp/
+
+# Local environment
+.env
