@@ -1,15 +1,14 @@
 # Core
-pandas>=2.0
+pandas>=2.0,<3.0
 pyarrow>=14.0
 numpy>=1.26,<2.0
 scipy>=1.11
 pyyaml>=6.0
 
-# Forecasting
+# Forecasting (utilsforecast pulled in transitively by statsforecast)
 statsmodels>=0.14
 statsforecast>=1.7
 hierarchicalforecast>=0.4
-utilsforecast>=0.1
 
 # Optimization
 pyomo>=6.7
@@ -18,12 +17,6 @@ highspy>=1.7
 # Scheduling
 ortools>=9.10
 
-# Simulation
-simpy>=4.1
-
 # Visualization + dashboard
 plotly>=5.18
 streamlit>=1.30
-
-# Dev
-jupyter>=1.0
