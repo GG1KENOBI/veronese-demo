@@ -13,8 +13,12 @@ from app.style import COLORS
 from src import maven_analysis as M
 
 
-def _fmt_usd(v: float) -> str:
-    return f"${v:,.0f}".replace(",", " ")
+def _fmt_rub(v: float) -> str:
+    if v >= 1_000_000:
+        return f"{v/1_000_000:.1f} млн ₽".replace(".", ",")
+    if v >= 1_000:
+        return f"{v/1_000:.0f} тыс ₽"
+    return f"{v:.0f} ₽"
 
 
 def render() -> None:
@@ -58,12 +62,12 @@ def render() -> None:
     )
     k2.metric(
         "Суммарный прогноз",
-        _fmt_usd(forecast["y_hat"].sum()),
+        _fmt_rub(forecast["y_hat"].sum()),
         help=f"Суммарная ожидаемая выручка за {horizon} дней по ансамблю.",
     )
     k3.metric(
         "Средний день прогноза",
-        _fmt_usd(forecast["y_hat"].mean()),
+        _fmt_rub(forecast["y_hat"].mean()),
     )
     last_30_hist = history.tail(30)["y"].sum()
     change = (forecast["y_hat"].head(30).sum() - last_30_hist) / last_30_hist * 100 if last_30_hist else 0
@@ -126,7 +130,7 @@ def render() -> None:
         height=420,
         margin=dict(l=60, r=20, t=40, b=40),
         xaxis_title="",
-        yaxis_title="Выручка, $",
+        yaxis_title="Выручка, ₽",
         hovermode="x unified",
         legend=dict(orientation="h", y=1.08, x=0.5, xanchor="center"),
         plot_bgcolor=COLORS["bg_transparent"],
@@ -171,7 +175,7 @@ def render() -> None:
             height=380,
             margin=dict(l=60, r=20, t=40, b=40),
             xaxis_title="",
-            yaxis_title="Выручка, $",
+            yaxis_title="Выручка, ₽",
             hovermode="x unified",
             legend=dict(orientation="h", y=1.08, x=0.5, xanchor="center"),
             plot_bgcolor=COLORS["bg_transparent"],
@@ -195,8 +199,8 @@ def render() -> None:
     # ─── Raw forecast table ──────────────────────────────────────────
     with st.expander("🗄 Таблица прогноза по дням"):
         disp = forecast[["ds", "y_hat", "y_hat_lo_80", "y_hat_hi_80"]].copy()
-        disp.columns = ["Дата", "Прогноз, $", "Нижн. гран. 80%", "Верхн. гран. 80%"]
+        disp.columns = ["Дата", "Прогноз, ₽", "Нижн. гран. 80%", "Верхн. гран. 80%"]
         disp["Дата"] = pd.to_datetime(disp["Дата"]).dt.strftime("%Y-%m-%d")
-        for col in ["Прогноз, $", "Нижн. гран. 80%", "Верхн. гран. 80%"]:
+        for col in ["Прогноз, ₽", "Нижн. гран. 80%", "Верхн. гран. 80%"]:
             disp[col] = disp[col].round(0).astype(int)
         st.dataframe(disp, use_container_width=True, hide_index=True, height=300)

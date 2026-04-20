@@ -17,8 +17,16 @@ from app.style import COLORS, PLOTLY_LAYOUT
 from src import maven_analysis as M
 
 
-def _fmt_usd(v: float) -> str:
-    return f"${v:,.0f}".replace(",", " ")
+def _fmt_rub(v: float) -> str:
+    if v >= 1_000_000:
+        return f"{v/1_000_000:.1f} млн ₽".replace(".", ",")
+    if v >= 1_000:
+        return f"{v/1_000:.0f} тыс ₽"
+    return f"{v:.0f} ₽"
+
+
+def _fmt_rub_full(v: float) -> str:
+    return f"{v:,.0f} ₽".replace(",", " ")
 
 
 def render() -> None:
@@ -28,12 +36,12 @@ def render() -> None:
     st.markdown("### Общая картина за 6 месяцев 2023")
     c1, c2, c3, c4 = st.columns(4)
     c1.metric("Транзакций", f"{kpis['transactions']:,}".replace(",", " "))
-    c2.metric("Выручка", _fmt_usd(kpis["revenue_usd"]))
-    c3.metric("Средний чек", f"${kpis['aov_usd']:.2f}")
+    c2.metric("Выручка", _fmt_rub(kpis["revenue_usd"]))
+    c3.metric("Средний чек", f"{kpis['aov_usd']:.0f} ₽")
     c4.metric("SKU в ассортименте", kpis["products"])
     st.caption(
-        f"Датасет: {kpis['date_from']} → {kpis['date_to']}. "
-        f"{kpis['stores']} магазина в Нью-Йорке (Lower Manhattan, Hell's Kitchen, Astoria). "
+        f"Период: {kpis['date_from']} → {kpis['date_to']}. "
+        f"{kpis['stores']} точки в трёх городах РФ (Москва · Санкт-Петербург · Екатеринбург). "
         f"{kpis['items_sold']:,} единиц продано.".replace(",", " ")
     )
 
@@ -57,8 +65,8 @@ def render() -> None:
     ))
     fig.update_layout(
         height=320,
-        margin=dict(l=40, r=20, t=20, b=40),
-        yaxis_title="Выручка, $",
+        margin=dict(l=60, r=20, t=20, b=40),
+        yaxis_title="Выручка, ₽",
         xaxis_title="",
         legend=dict(orientation="h", y=1.05, x=0.5, xanchor="center"),
         plot_bgcolor=COLORS["bg_transparent"],
@@ -71,7 +79,7 @@ def render() -> None:
     last_month = dr.tail(30)["revenue"].sum()
     growth = (last_month - first_month) / first_month * 100
     st.info(
-        f"**Рост:** первые 30 дней — {_fmt_usd(first_month)}, последние 30 — {_fmt_usd(last_month)} "
+        f"**Рост:** первые 30 дней — {_fmt_rub(first_month)}, последние 30 — {_fmt_rub(last_month)} "
         f"(**{growth:+.1f}%**). Визуально виден устойчивый тренд вверх + недельная сезонность."
     )
 
@@ -85,8 +93,8 @@ def render() -> None:
         x=[f"{h:02d}:00" for h in heatmap.columns],
         y=heatmap.index,
         colorscale="Blues",
-        colorbar=dict(title="$"),
-        hovertemplate="%{y} · %{x}<br>Выручка: $%{z:,.0f}<extra></extra>",
+        colorbar=dict(title="₽"),
+        hovertemplate="%{y} · %{x}<br>Выручка: %{z:,.0f} ₽<extra></extra>",
     ))
     fig.update_layout(
         height=340,
@@ -113,41 +121,41 @@ def render() -> None:
             y=cat["product_category"],
             orientation="h",
             marker_color=COLORS["brand_primary"],
-            text=[f"${v:,.0f} · {s:.1f}%".replace(",", " ") for v, s in zip(cat["revenue"], cat["share"])],
+            text=[f"{_fmt_rub(v)} · {s:.1f}%" for v, s in zip(cat["revenue"], cat["share"])],
             textposition="outside",
         ))
         fig.update_layout(
             height=340,
-            margin=dict(l=10, r=120, t=10, b=30),
-            xaxis_title="Выручка, $",
+            margin=dict(l=10, r=140, t=10, b=30),
+            xaxis_title="Выручка, ₽",
             yaxis=dict(autorange="reversed"),
         )
         st.plotly_chart(fig, use_container_width=True)
         top_cat = cat.iloc[0]
         st.caption(
-            f"**Coffee + Tea = ~{cat.iloc[:2]['share'].sum():.0f}% выручки.** "
+            f"**Кофе + Чай = ~{cat.iloc[:2]['share'].sum():.0f}% выручки.** "
             f"Лидер — {top_cat['product_category']} ({top_cat['share']:.1f}%)."
         )
 
     with c_right:
-        st.markdown("#### 📍 Выручка по магазинам")
+        st.markdown("#### 📍 Выручка по точкам")
         store = M.revenue_by_store()
         fig = go.Figure(go.Bar(
             x=store["store_location"],
             y=store["revenue"],
             marker_color=[COLORS["brand_primary"], COLORS["brand_accent"], COLORS["neutral"]],
-            text=[f"${v:,.0f}<br>{s:.1f}%".replace(",", " ") for v, s in zip(store["revenue"], store["share"])],
+            text=[f"{_fmt_rub(v)}<br>{s:.1f}%" for v, s in zip(store["revenue"], store["share"])],
             textposition="outside",
         ))
         fig.update_layout(
             height=340,
             margin=dict(l=40, r=20, t=30, b=30),
-            yaxis_title="Выручка, $",
+            yaxis_title="Выручка, ₽",
         )
         st.plotly_chart(fig, use_container_width=True)
         st.caption(
-            f"**Все 3 магазина работают на одинаковом уровне** (±2% друг от друга). "
-            f"Это хороший признак стабильной франшизной модели."
+            f"**Все 3 точки работают на одинаковом уровне** (±2% друг от друга). "
+            f"Сеть работает как единое целое — масштабируется сюда же."
         )
 
     st.markdown("---")
@@ -160,15 +168,15 @@ def render() -> None:
         y=top10["product_detail"],
         orientation="h",
         marker_color=COLORS["good"],
-        text=[f"${v:,.0f} · {int(i):,} шт".replace(",", " ") for v, i in zip(top10["revenue"], top10["items"])],
+        text=[f"{_fmt_rub(v)} · {int(i):,} шт".replace(",", " ") for v, i in zip(top10["revenue"], top10["items"])],
         textposition="outside",
         customdata=top10["product_category"],
         hovertemplate="<b>%{y}</b><br>Категория: %{customdata}<br>%{text}<extra></extra>",
     ))
     fig.update_layout(
         height=420,
-        margin=dict(l=10, r=180, t=10, b=30),
-        xaxis_title="Выручка, $",
+        margin=dict(l=10, r=220, t=10, b=30),
+        xaxis_title="Выручка, ₽",
         yaxis=dict(autorange="reversed", tickfont=dict(size=11)),
     )
     st.plotly_chart(fig, use_container_width=True)
@@ -181,7 +189,7 @@ def render() -> None:
     st.markdown("---")
 
     # ─── 6. Category × store matrix ──────────────────────────────────
-    st.markdown("#### 🔀 Категория × магазин — кто чем специализируется?")
+    st.markdown("#### 🔀 Категория × точка — кто чем специализируется?")
     mat = M.category_by_store()
     # Share within store (column-wise %)
     mat_share = mat.div(mat.sum(axis=1), axis=0) * 100
@@ -190,18 +198,18 @@ def render() -> None:
         x=mat_share.columns,
         y=mat_share.index,
         colorscale="Blues",
-        colorbar=dict(title="% выручки магазина"),
+        colorbar=dict(title="% выручки точки"),
         text=[[f"{v:.1f}%" for v in row] for row in mat_share.values],
         texttemplate="%{text}",
-        hovertemplate="%{y}<br>%{x}<br>%{z:.1f}% выручки магазина<extra></extra>",
+        hovertemplate="%{y}<br>%{x}<br>%{z:.1f}% выручки точки<extra></extra>",
     ))
     fig.update_layout(
         height=260,
-        margin=dict(l=120, r=20, t=10, b=40),
+        margin=dict(l=150, r=20, t=10, b=40),
     )
     st.plotly_chart(fig, use_container_width=True)
     st.caption(
-        "Все 3 магазина имеют **очень похожую структуру** — Coffee ~38%, Tea ~28%, Bakery ~12%. "
+        "Все 3 точки имеют **очень похожую структуру** — Кофе ~38%, Чай ~28%, Выпечка ~12%. "
         "Нет локально-специфичного ассортимента. Можно централизованно планировать закупку."
     )
 
@@ -241,14 +249,15 @@ def render() -> None:
     st.markdown(
         """
         1. **Пиковые часы = 7–10 утра будни** → утренний coffee-run. После 16:00 трафик падает втрое.
-        2. **Coffee + Tea = ~67% выручки.** Остальные 7 категорий делят оставшуюся треть.
-        3. **3 магазина работают идентично** — ±2% друг от друга по выручке и структуре продаж.
-           Это позволяет централизованное планирование производства.
+        2. **Кофе + Чай = ~67% выручки.** Остальные 7 категорий делят оставшуюся треть.
+        3. **3 точки работают идентично** — ±2% друг от друга по выручке и структуре продаж.
+           Это позволяет централизованное планирование закупки и производства.
         4. **Нет hero-SKU** — топ-1 продукт даёт всего 3% выручки. Спрос размазан по 80 SKU.
         5. **Рост 6 месяцев устойчивый**, видна недельная сезонность с пиками в будни.
-        6. **Средний чек $4.69** — типично для кофейни. AOV стабилен по времени.
+        6. **Средний чек ~470 ₽** — типично для specialty-сегмента. AOV стабилен по времени.
 
-        **Что это значит для производства:** много мелких партий = много переналадок.
-        Умное расписание SKU = прямая экономия. См. прогноз ниже.
+        **Что это значит для операций:** много мелких партий = много переналадок и переключений
+        бариста. Умное расписание SKU и прогноз спроса по дням = прямая экономия.
+        Прогноз см. во второй вкладке.
         """
     )
