@@ -1,0 +1,18 @@
+# Streamlit runtime config. Committed so Streamlit Cloud / any host picks it up.
+
+[theme]
+# Dark theme — matches our chart color choices (white text on dark bg)
+base = "dark"
+primaryColor = "#22c55e"
+backgroundColor = "#0f172a"
+secondaryBackgroundColor = "#1e293b"
+textColor = "#e5e7eb"
+font = "sans serif"
+
+[server]
+# Streamlit Cloud will override these, but useful for local testing
+headless = true
+port = 8501
+
+[browser]
+gatherUsageStats = false
